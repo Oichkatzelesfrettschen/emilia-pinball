@@ -8,6 +8,7 @@
 ***************************************************************************/
 
 #include <fstream>
+#include "reactos_stdio_streams.h"
 #include <string>
 #include <sstream>
 #include <cstdio>
@@ -88,7 +89,7 @@ Loader * Loader::getInstance() {
  * Reader functions, this wierd things is done to 
  * enable line counting
  ******************************************************/
-void Loader::readNextToken(ifstream & file, istringstream & ist, string & str) {
+void Loader::readNextToken(istream & file, istringstream & ist, string & str) {
   ist >> str;
   while(file && !ist) {
     string buf;
@@ -100,7 +101,7 @@ void Loader::readNextToken(ifstream & file, istringstream & ist, string & str) {
   }
 }
 
-void Loader::readNextToken(ifstream & file, istringstream & ist, int & i) {
+void Loader::readNextToken(istream & file, istringstream & ist, int & i) {
   ist >> i;
   while(file && !ist) {
     string buf;
@@ -112,7 +113,7 @@ void Loader::readNextToken(ifstream & file, istringstream & ist, int & i) {
   }
 }
 
-void Loader::readNextToken(ifstream & file, istringstream & ist, float & f) {
+void Loader::readNextToken(istream & file, istringstream & ist, float & f) {
   ist >> f;
   while(file && !ist) {
     string buf;
@@ -206,7 +207,7 @@ void Loader::clearSignalVariable() {
  * Set properties for a group
  ******************************************************/
 
-void Loader::loadProperties(ifstream & file, istringstream & ist, Group * group) {
+void Loader::loadProperties(istream & file, istringstream & ist, Group * group) {
   EM_COUT("Loader::loadProperties", 0);
   
   string str;
@@ -297,7 +298,7 @@ void Loader::loadProperties(ifstream & file, istringstream & ist, Group * group)
  ** Behaviors
  **************************************************************/
 
-void Loader::loadArmBehavior(ifstream & file, istringstream & ist, Group * group) {
+void Loader::loadArmBehavior(istream & file, istringstream & ist, Group * group) {
   EM_COUT("Loader::loadArmBehavior", 0);
 
   string str;
@@ -328,7 +329,7 @@ void Loader::loadArmBehavior(ifstream & file, istringstream & ist, Group * group
   EmReadCmp(file, ist, str, "}");
 }
 
-void Loader::loadAnimation(ifstream & file, istringstream & ist, Engine *, 
+void Loader::loadAnimation(istream & file, istringstream & ist, Engine *, 
                            Group * group, Behavior * beh) {
   EM_COUT("Loader::loadAnimation", 0);
 
@@ -370,7 +371,7 @@ void Loader::loadAnimation(ifstream & file, istringstream & ist, Engine *,
   EmReadCmp(file, ist, str, "}");
 }
 
-void Loader::loadBehaviorLight(ifstream & file, istringstream & ist, 
+void Loader::loadBehaviorLight(istream & file, istringstream & ist, 
                                Engine * engine, Group * group, Behavior * beh) {
   EM_COUT("Loader::loadBehaviorLight", 0);
 
@@ -406,7 +407,7 @@ void Loader::loadBehaviorLight(ifstream & file, istringstream & ist,
   this->loadMisc(file, ist, engine, gl, beh);
 }
 
-void Loader::loadBumperBehavior(ifstream & file, istringstream & ist, Engine * engine, Group * group) {
+void Loader::loadBumperBehavior(istream & file, istringstream & ist, Engine * engine, Group * group) {
   EM_COUT("Loader::loadBumperBehavior", 0);
   
   string str;
@@ -438,7 +439,7 @@ void Loader::loadBumperBehavior(ifstream & file, istringstream & ist, Engine * e
   this->loadMisc(file, ist, engine, group, beh);
 }
 
-void Loader::loadPlungerBehavior(ifstream & file, istringstream & ist, Engine * engine, Group * group) {
+void Loader::loadPlungerBehavior(istream & file, istringstream & ist, Engine * engine, Group * group) {
   EM_COUT("Loader::loadPlungerBehavior", 0);
   
   string str;
@@ -464,7 +465,7 @@ void Loader::loadPlungerBehavior(ifstream & file, istringstream & ist, Engine * 
   this->loadMisc(file, ist, engine, group, beh);
 }
 
-void Loader::loadStateItem(ifstream & file, istringstream & ist, Engine * engine, Group * group, Behavior * beh) {
+void Loader::loadStateItem(istream & file, istringstream & ist, Engine * engine, Group * group, Behavior * beh) {
   EM_COUT("Loader::loadStateItem", 0);
   
   string str;
@@ -615,7 +616,7 @@ void Loader::loadStateItem(ifstream & file, istringstream & ist, Engine * engine
   this->loadMisc(file, ist, engine, group, beh);
 }
 
-void Loader::loadStateBehavior(ifstream & file, istringstream & ist, Engine * engine, Group * group) {
+void Loader::loadStateBehavior(istream & file, istringstream & ist, Engine * engine, Group * group) {
   EM_COUT("state", 0);
 	
   string str;
@@ -632,7 +633,7 @@ void Loader::loadStateBehavior(ifstream & file, istringstream & ist, Engine * en
  ** Script loading - deprecated
  ****************************************************************/
 
-void Loader::loadScript(ifstream & file, istringstream & ist, Engine *, Group * group) {
+void Loader::loadScript(istream & file, istringstream & ist, Engine *, Group * group) {
   EM_COUT("Loader::loadScript", 0);
   EmAssert(group != NULL, "Group NULL in loadMisc");
 
@@ -688,7 +689,7 @@ void Loader::loadScript(ifstream & file, istringstream & ist, Engine *, Group * 
  ** Module (plugin) loading
  ****************************************************************/
 
-void Loader::loadModule(ifstream & file, istringstream & ist, Engine *, Group * group) {
+void Loader::loadModule(istream & file, istringstream & ist, Engine *, Group * group) {
   EM_COUT("+Loader::loadModule", 1);
   EmAssert(group != NULL, "Group NULL in loadMisc");
   m_LoaderModule = LoaderModule::getInstance();
@@ -732,7 +733,7 @@ int Loader::cmpVersion(const FileVersion & version, const int major, const int m
 }
 
 /* Things added to objects, e.g. lights, animation, behavior*/
-void Loader::loadMisc(ifstream & file, istringstream & ist, Engine * engine, Group * group, Behavior * beh) {
+void Loader::loadMisc(istream & file, istringstream & ist, Engine * engine, Group * group, Behavior * beh) {
   EM_COUT("Loader::loadMisc", 0);
   EmAssert(engine != NULL && group != NULL, "Engine or group NULL in loadMisc");
 
@@ -781,7 +782,7 @@ void Loader::loadMisc(ifstream & file, istringstream & ist, Engine * engine, Gro
 }
 
 /* Top level object */
-Group * Loader::loadStdObject(ifstream & file, istringstream & ist, Engine * engine) {
+Group * Loader::loadStdObject(istream & file, istringstream & ist, Engine * engine) {
   string str;
 
   this->readNextToken(file, ist, str);
@@ -819,7 +820,7 @@ Group * Loader::loadStdObject(ifstream & file, istringstream & ist, Engine * eng
  ** Shape specific loads
  ****************************************************************/
 
-void Loader::loadShape(ifstream & file, istringstream & ist, Engine *, 
+void Loader::loadShape(istream & file, istringstream & ist, Engine *, 
                        Group * group, Behavior *) {
   EM_COUT("Loader::loadShape", 0);
   
@@ -833,7 +834,7 @@ void Loader::loadShape(ifstream & file, istringstream & ist, Engine *,
   }
 }
 
-void Loader::readUnknown(ifstream & file, istringstream & ist) {
+void Loader::readUnknown(istream & file, istringstream & ist) {
   EM_COUT("Loader::readUnknown", 0);
   string str;
   EmReadCmp(file, ist, str, "{");
@@ -846,7 +847,7 @@ void Loader::readUnknown(ifstream & file, istringstream & ist) {
   }
 }
 
-void Loader::readPolygon(ifstream & file, istringstream & ist, Shape3D* shape) {
+void Loader::readPolygon(istream & file, istringstream & ist, Shape3D* shape) {
   EM_COUT("Loader::readPolygon", 0);
   string str;
   Polygon3D * poly = new Polygon3D(shape);
@@ -878,7 +879,7 @@ void Loader::readPolygon(ifstream & file, istringstream & ist, Shape3D* shape) {
   shape->add(poly);
 }
 
-void Loader::readPolygonEdge(ifstream & file, istringstream & ist, Polygon3D* poly) {
+void Loader::readPolygonEdge(istream & file, istringstream & ist, Polygon3D* poly) {
   EM_COUT("Loader::readPolygonEdge", 0);
   string str;
   int i;
@@ -892,7 +893,7 @@ void Loader::readPolygonEdge(ifstream & file, istringstream & ist, Polygon3D* po
 
 }
 
-void Loader::readVertex(ifstream & file, istringstream & ist, Shape3D* shape) {
+void Loader::readVertex(istream & file, istringstream & ist, Shape3D* shape) {
   EM_COUT("Loader::readVertex", 0);
   float x, y, z, r, g, b, a, u, v;
   string str;
@@ -914,7 +915,7 @@ void Loader::readVertex(ifstream & file, istringstream & ist, Shape3D* shape) {
   shape->add(x, y, z, r, g, b, a, u, v);
 }
 
-void Loader::readTexture(ifstream & file, istringstream & ist, Shape3D* shape) {
+void Loader::readTexture(istream & file, istringstream & ist, Shape3D* shape) {
   EM_COUT("Loader::readTexture", 0);
   string str;
 
@@ -939,7 +940,7 @@ void Loader::readTexture(ifstream & file, istringstream & ist, Shape3D* shape) {
 
 /* Assumes that the word 'shape' is already read and that we wish read stuff
  * between { and } */
-Shape3D* Loader::loadShape3DChunk(ifstream & file, istringstream & ist) {
+Shape3D* Loader::loadShape3DChunk(istream & file, istringstream & ist) {
   EM_COUT("Loader::loadShape3DChunk loading shape", 0);
 
   Shape3D* shape = new Shape3D();
@@ -981,7 +982,7 @@ Shape3D* Loader::loadShape3DChunk(ifstream & file, istringstream & ist) {
  ****************************************************************/
 
 int Loader::loadFile(const char* fn, Engine * engine) {
-  ifstream file(fn);
+  reactball::StdioInStream file(fn);
   try {
     if (!file) {
       throw string("Loader::loadFile file not found: ") + string(fn);
@@ -1031,7 +1032,7 @@ int Loader::loadFile(const char* fn, Engine * engine) {
 #ifdef RZR_PATCHES_3DS //-----------------------------------------------------
 
 /// load all scene in one shape
-void Loader::loadShape3dsAscii(ifstream & file, istringstream & ist, 
+void Loader::loadShape3dsAscii(istream & file, istringstream & ist, 
 			       Engine *, Group * group, Behavior *) 
 {
   string str;
@@ -1069,7 +1070,7 @@ void Loader::loadShape3dsAscii(ifstream & file, istringstream & ist,
 }
 
 
-void Loader::loadGroup3dsAscii(ifstream & file, istringstream & ist, 
+void Loader::loadGroup3dsAscii(istream & file, istringstream & ist, 
 			       Engine *, Group * group, Behavior *) 
   {
   EM_COUT("Loader::loadShape3dsAscii", 0);

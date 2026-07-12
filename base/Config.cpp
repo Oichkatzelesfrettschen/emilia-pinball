@@ -13,6 +13,7 @@
 
 #include <cstdio>
 #include <fstream>
+#include "reactos_stdio_streams.h"
 #include <iostream>
 
 #if HAVE_SYS_STAT_H
@@ -198,7 +199,7 @@ void Config::saveConfig()
     cerr << "error: io: Can't create directory \'" << dirname << "\'" << endl;
   }
   
-  ofstream file(filename.c_str());
+  reactball::StdioOutStream file(filename.c_str());
   if (!file) {
     cerr << "Couldn't open config file: " << filename << endl;
     cerr << "Can't save config" <<  endl;
@@ -255,7 +256,7 @@ void Config::loadConfig() {
 
   filename = dirname  + filename;
 
-  ifstream file(filename.c_str());
+  reactball::StdioInStream file(filename.c_str());
   if (!file) {
     file.open(PINBALL_CONFIG_FILE);
   }
@@ -441,7 +442,13 @@ void Config::setPaths(char const * const argv0) {
 #endif //TODO: MacOS file sep ':'   
     if ( ptrw > ptr ) ptr = ptrw;
     //    assert( (*ptr != 0) );
-    string path( argv0 , ptr - argv0 );
+    /* When the program is launched by bare name (no '/' or '\\' in argv0,
+     * as happens after a `cd` in the ReactOS launcher), both strrchr calls
+     * return NULL; ptr - argv0 would then be a negative count that
+     * std::string reads as an enormous length and throws std::length_error.
+     * A missing directory component means the executable sits in the current
+     * directory, so the path segment is ".". */
+    string path( ptr != NULL ? string(argv0, ptr - argv0) : string(".") );
     //EM_COUT( path , 42);    
     if ( isAbsolutePath( argv0 ) ) {
       m_sExeDir = path ;
