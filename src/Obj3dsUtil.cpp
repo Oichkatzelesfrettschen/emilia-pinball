@@ -86,8 +86,12 @@ extern "C" {
 #define float2int(x) ( (int) ( x + .5 ) )
 
 #define SQRT2 1.4142135f
+/* SDL_stdinc.h already provides a Uint32 typedef; a macro here would rewrite
+ * that typedef's underlying type and break the SDL build. */
+#if !EM_USE_SDL
 #ifndef Uint32
 #define Uint32 unsigned int
+#endif
 #endif
 #endif //_h_
   /* #ident "$Id: */

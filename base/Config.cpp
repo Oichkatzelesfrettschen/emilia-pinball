@@ -28,7 +28,6 @@
 #ifdef WIN32
 //#include <io.h> 
 #include <direct.h>  // mkdir @ msvc+mingw32
-//#define mkdir(name, modes) mkdir(name)
 #endif //!-rzr
 
 using namespace std;
@@ -436,7 +435,7 @@ void Config::setPaths(char const * const argv0) {
     //cout<<"relative to exe file"<<endl;
     char const * ptr = (strrchr(argv0,'/')); // unix /cygwin / check win32 
 #ifdef WIN32
-    char const * const ptrw = 0;    ptrw = (strrchr(argv0,'\\')); 
+    char const * ptrw = (strrchr(argv0,'\\'));
 #else 
     char const * const ptrw = 0;
 #endif //TODO: MacOS file sep ':'   
