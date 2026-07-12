@@ -177,8 +177,15 @@ void TextureUtil::initGrx() {
   SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-  /* Initialize the display */
-  SDL_Renderer *sdlRenderer;
+  /* Initialize the display.
+   *
+   * Emilia draws with raw OpenGL immediate mode (glBegin/glVertex3f) and
+   * presents with SDL_GL_SwapWindow.  Creating an SDL_Renderer alongside the
+   * window (the historical SDL_CreateWindowAndRenderer path) makes the
+   * renderer own the GL context, so the game's manual GL calls target no
+   * current context and the window stays black wherever the renderer picks a
+   * non-GL backend.  Create the window and an explicit GL context directly so
+   * the immediate-mode drawing has a context that SwapWindow presents. */
   Uint32 window_flags = SDL_WINDOW_OPENGL						\
     | (config->useFullScreen() ? getenv("PINBALL_WINDOW_FULLSCREEN_DESKTOP") ?
        SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_FULLSCREEN
@@ -186,21 +193,24 @@ void TextureUtil::initGrx() {
   #ifdef HAVE_OPENGLES
   SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles");
   #endif
-  SDL_CreateWindowAndRenderer(0, 0, window_flags, &m_window, &sdlRenderer);
-  SDL_SetWindowSize(m_window, config->getWidth(), config->getHeight());
-  SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
-  SDL_RenderClear(sdlRenderer);
-  SDL_RenderPresent(sdlRenderer);
-
-  //    if (config->useFullScreen()) {
-  SDL_ShowCursor(SDL_DISABLE);
-  //    }
-  SDL_SetWindowTitle(m_window, "Emilia Pinball");
-
+  m_window = SDL_CreateWindow("Emilia Pinball",
+                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              config->getWidth(), config->getHeight(),
+                              window_flags);
   if (m_window == NULL) {
     cerr << "Couldn't set video mode: " << SDL_GetError() << endl;
     exit(1);
   }
+
+  m_glcontext = SDL_GL_CreateContext(m_window);
+  if (m_glcontext == NULL) {
+    cerr << "Couldn't create OpenGL context: " << SDL_GetError() << endl;
+    exit(1);
+  }
+  SDL_GL_MakeCurrent(m_window, m_glcontext);
+  SDL_GL_SetSwapInterval(1);
+
+  SDL_ShowCursor(SDL_DISABLE);
 
   cerr << "Vendor     : " << glGetString( GL_VENDOR ) << endl;
   cerr << "Renderer   : " << glGetString( GL_RENDERER ) << endl;

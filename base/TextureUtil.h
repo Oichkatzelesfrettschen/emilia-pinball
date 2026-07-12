@@ -84,6 +84,7 @@ private:
   Color m_colClear;
 #if EM_USE_SDL
   SDL_Window* m_window;
+  SDL_GLContext m_glcontext;
 #endif
 };
 
