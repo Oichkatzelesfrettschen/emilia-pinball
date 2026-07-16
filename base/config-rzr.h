@@ -133,15 +133,20 @@
 
 // Common WIN32 options tested on mingw32 + msvc6
 #ifdef RZR_MODES_UNSUPPORTED //!+rzr MSVC++ , mingw32 (etc not tested so far)
+#include <direct.h> // _mkdir on both MSVC and mingw-w64
 #ifdef _MSC_VER
-#include <direct.h>
-#include <io.h> // mkdir
+#include <io.h>
 #else
-#include <fcntl.h> //@msvc
+#include <fcntl.h>
 #endif
-//#include <sys/stat.h>
-#define mkdir(dir,modes) mkdir(dir) // @direct.h // autoconf should do that 
-#endif 
+/* Drop the POSIX mode argument onto _mkdir.  Defining it after <direct.h>
+ * (whose one-argument mkdir macro would otherwise reject two-argument call
+ * sites) keeps every mkdir(path, mode) in the tree compiling on Windows. */
+#ifdef mkdir
+#undef mkdir
+#endif
+#define mkdir(dir,modes) _mkdir(dir)
+#endif
 
 
 #ifdef RZR_RANDOM_UNSUPPORTED

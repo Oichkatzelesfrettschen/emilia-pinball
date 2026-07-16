@@ -49,8 +49,8 @@ class Loader {
   int loadFile(const char * fn, Engine * engine);
   /** Set to false if you do not want to load modules (plugins) */ 
   void useModules(bool m) { m_bModules = m; };
-  Group * loadStdObject(ifstream & file, istringstream & str, Engine * engine);
-  Shape3D* loadShape3DChunk(ifstream & file, istringstream & str);
+  Group * loadStdObject(istream & file, istringstream & str, Engine * engine);
+  Shape3D* loadShape3DChunk(istream & file, istringstream & str);
   /** Returns the identifier for the signal with name 's'.
    * If no signal is found a new identifier will be allocated. */
   int getSignal(const char * s);
@@ -66,33 +66,33 @@ class Loader {
 #if EM_UNIT_TEST
   friend class LoaderTest;
 #endif
-  void readNextToken(ifstream & file, istringstream & ist, string & str);
-  void readNextToken(ifstream & file, istringstream & ist, int & i);
-  void readNextToken(ifstream & file, istringstream & ist, float & f);
+  void readNextToken(istream & file, istringstream & ist, string & str);
+  void readNextToken(istream & file, istringstream & ist, int & i);
+  void readNextToken(istream & file, istringstream & ist, float & f);
 
-  void readPolygon(ifstream & file, istringstream & ist, Shape3D* shape);
-  void readTexture(ifstream & file, istringstream & ist,Shape3D* shape);
-  void readPolygonEdge(ifstream & file, istringstream & ist,Polygon3D* poly);
-  void readVertex(ifstream & file, istringstream & ist,Shape3D* shape);
-  void readUnknown(ifstream & file, istringstream & ist);
+  void readPolygon(istream & file, istringstream & ist, Shape3D* shape);
+  void readTexture(istream & file, istringstream & ist,Shape3D* shape);
+  void readPolygonEdge(istream & file, istringstream & ist,Polygon3D* poly);
+  void readVertex(istream & file, istringstream & ist,Shape3D* shape);
+  void readUnknown(istream & file, istringstream & ist);
 
-  void loadProperties(ifstream & file, istringstream & ist,Group * g);
-  void loadArmBehavior(ifstream & file, istringstream & ist,Group * group);
-  void loadShape(ifstream & file, istringstream & ist, 
+  void loadProperties(istream & file, istringstream & ist,Group * g);
+  void loadArmBehavior(istream & file, istringstream & ist,Group * group);
+  void loadShape(istream & file, istringstream & ist, 
 		 Engine * engine, Group * group, Behavior * beh);
-  void loadAnimation(ifstream & file, istringstream & ist, 
+  void loadAnimation(istream & file, istringstream & ist, 
 		     Engine * engine, Group * group, Behavior * beh);
-  void loadBehaviorLight(ifstream & file, istringstream & ist, 
+  void loadBehaviorLight(istream & file, istringstream & ist, 
 			 Engine * engine, Group * group, Behavior * beh);
-  void loadCaveBehavior(ifstream & file, istringstream & ist, Engine * engine, Group* group);
-  void loadBumperBehavior(ifstream & file, istringstream & ist, Engine * engine, Group * group);
-  void loadPlungerBehavior(ifstream & file, istringstream & ist, Engine * engine, Group * group);
-  void loadStateItem(ifstream & file, istringstream & ist, 
+  void loadCaveBehavior(istream & file, istringstream & ist, Engine * engine, Group* group);
+  void loadBumperBehavior(istream & file, istringstream & ist, Engine * engine, Group * group);
+  void loadPlungerBehavior(istream & file, istringstream & ist, Engine * engine, Group * group);
+  void loadStateItem(istream & file, istringstream & ist, 
 		     Engine * engine, Group * group, Behavior * beh);
-  void loadStateBehavior(ifstream & file, istringstream & ist, Engine * engine, Group * group);
-  void loadScript(ifstream & file, istringstream & ist, Engine * engine, Group * group);
-  void loadModule(ifstream & file, istringstream & ist, Engine * engine, Group * group);
-  void loadMisc(ifstream & file, istringstream & ist, Engine * engine, Group * group, Behavior * beh);
+  void loadStateBehavior(istream & file, istringstream & ist, Engine * engine, Group * group);
+  void loadScript(istream & file, istringstream & ist, Engine * engine, Group * group);
+  void loadModule(istream & file, istringstream & ist, Engine * engine, Group * group);
+  void loadMisc(istream & file, istringstream & ist, Engine * engine, Group * group, Behavior * beh);
 
   // return -1 if ver < m.m.m, 0 if var == m.m.m and 1 if ver > m.m.m
   int cmpVersion(const FileVersion & ver, const int major, const int minor, const int micro);
@@ -113,10 +113,10 @@ class Loader {
 
 #ifdef RZR_PATCHES_3DS // #define RZR_PATCHES_3DS in pinconfig.h
   /// load and add shape (3DS tri mesh , color or single texture, and collision
-  void loadShape3dsAscii(ifstream & file, istringstream & ist, 
+  void loadShape3dsAscii(istream & file, istringstream & ist, 
 			 Engine * engine, Group * group, Behavior * beh);
   /// multi textures no collisions 
-  void loadGroup3dsAscii(ifstream & file, istringstream & ist, 
+  void loadGroup3dsAscii(istream & file, istringstream & ist, 
                          Engine *, Group * group, Behavior *);
 
   Obj3dsUtil* m_Obj3dsUtil;

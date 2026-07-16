@@ -29,6 +29,7 @@
 
 #include <iostream>
 #include <fstream>
+#include "reactos_stdio_streams.h"
 
 #include <cstdio>
 
@@ -261,7 +262,7 @@ bool Table::readHighScoresFile() {
   string sFileName = string(home? home:".") + "/.config/emilia/" + m_sTableName +
    "."+HIGH_SCORES_FILENAME;
 
-  ifstream file(sFileName.c_str());
+  reactball::StdioInStream file(sFileName.c_str());
   if (!file) {
     cerr << "Couldn't open high scores file: " << sFileName << endl;
     cerr << "Using default values!" << endl;
@@ -319,7 +320,7 @@ bool Table::writeHighScoresFile() {
   if (! Config::create_directories(dirname)) {
     cerr << "error: io: Can't create directory \'" << dirname << "\'" << endl;
   }
-  ofstream file(sFileName.c_str());//, ios_base::out | ios_base::trunc);
+  reactball::StdioOutStream file(sFileName.c_str());
   if (!file) {
     cerr << "Couldn't open high scores file: " << sFileName << endl;
     cerr << "Can't save high scores!" <<  endl;

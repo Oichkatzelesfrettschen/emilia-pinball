@@ -19,6 +19,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
+#include <clocale>
+#include <locale>
 
 #ifdef _MSC_VER //!+rzr : maybe we can use a portable IO lib such as physicfs
 #include <io.h> //find
@@ -1020,6 +1022,13 @@ int WINAPI WinMain( HINSTANCE hInst,  HINSTANCE hPreInst,
 
 int main(int argc, char *argv[])
 {
+  /* ReactOS' msvcrt does not drive libstdc++'s std::ios_base::Init the way
+   * a full CRT does, so std::locale::_S_global stays null and the first
+   * stream construction (Config::loadConfig's ifstream) dereferences it.
+   * Forcing the classic "C" locale here runs _S_initialize under our control
+   * before any stream is built. */
+  setlocale(LC_ALL, "C");
+  try { std::locale::global(std::locale::classic()); } catch (...) {}
   PINBALL(FUNCT());
   int status = EXIT_SUCCESS;
   status |=  Pinball::main(argc, argv);

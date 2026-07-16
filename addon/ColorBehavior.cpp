@@ -34,3 +34,9 @@ void ColorBehavior::onTick() {
 	}
 }
 
+/* Behavior::onSignal is pure virtual; ColorBehavior reacts only on tick, so
+ * the signal handler is an intentional no-op.  Its absence upstream leaves
+ * the vtable's onSignal slot unresolved at link time. */
+void ColorBehavior::StdOnSignal() {
+}
+

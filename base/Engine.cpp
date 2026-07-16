@@ -84,6 +84,12 @@ Engine::Engine(int & argc, char *argv[])
   
   if (!config->useExternGL()) {
 #if EM_USE_SDL
+    /* The mingw/ReactOS build owns its own entry point, so SDL_MAIN_HANDLED
+     * suppresses SDL's main hook; SDL_SetMainReady tells SDL the startup it
+     * would normally run has been satisfied. */
+#ifdef SDL_MAIN_HANDLED
+    SDL_SetMainReady();
+#endif
     SDL_Init(SDL_INIT_TIMER);
 #endif
     TextureUtil::getInstance()->initGrx();
