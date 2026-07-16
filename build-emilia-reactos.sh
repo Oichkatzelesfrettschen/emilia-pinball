@@ -12,6 +12,7 @@ SDLMIX=$S/SDL2_mixer-2.8.1/i686-w64-mingw32
 OUT=$REPO/bin-reactos
 CXX=i686-w64-mingw32-g++
 
+rm -rf "$OUT/obj"
 mkdir -p "$OUT/obj"
 cd "$REPO"
 
